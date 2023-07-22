@@ -24,12 +24,16 @@ const _catalog = [
 
 class ShoppingRepository {
   final _items = <Item>[];
+  final itemswithquantity = <Item,int>{};
 
   Future<List<String>> loadCatalog() => Future.delayed(_delay, () => _catalog);
 
   Future<List<Item>> loadCartItems() => Future.delayed(_delay, () => _items);
+  Future<Map<Item,int>> loadCartItemsWithQuantity() => Future.delayed(_delay, () => itemswithquantity);
 
   void addItemToCart(Item item) => _items.add(item);
+
+  void addItemToCartQuantity(Item item) => itemswithquantity.update(item, (oldvalue) => oldvalue+1 , ifAbsent: ()=>1) ;
 
   void removeItemFromCart(Item item) => _items.remove(item);
 }

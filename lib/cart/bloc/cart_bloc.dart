@@ -16,12 +16,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   final ShoppingRepository shoppingRepository;
+  // final itemsMap = items.map((item) => MapEntry(item, 1));
 
   Future<void> _onStarted(CartStarted event, Emitter<CartState> emit) async {
     emit(CartLoading());
     try {
       final items = await shoppingRepository.loadCartItems();
-      emit(CartLoaded(cart: Cart(items: [...items])));
+      final itemsWithQuantity = await shoppingRepository.loadCartItemsWithQuantity();
+      emit(CartLoaded(cart: Cart(items: [...items] , itemswithquantity: itemsWithQuantity )));
     } catch (_) {
       emit(CartError());
     }
@@ -35,7 +37,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (state is CartLoaded) {
       try {
         shoppingRepository.addItemToCart(event.item);
-        emit(CartLoaded(cart: Cart(items: [...state.cart.items, event.item])));
+        shoppingRepository.addItemToCartQuantity(event.item);
+
+        // state.cart.itemswithquantity.update(event.item, (value) => value+1 , ifAbsent: () => 1);
+        emit(CartLoaded(cart: Cart(items: [...state.cart.items, event.item],
+        itemswithquantity: state.cart.itemswithquantity
+        )));
       } catch (_) {
         emit(CartError());
       }

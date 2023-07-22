@@ -59,11 +59,14 @@ class AddButton extends StatelessWidget {
                   style: TextButton.styleFrom(
                     disabledForegroundColor: theme.primaryColor,
                   ),
-                  onPressed: isInCart
-                      ? null
-                      : () => context.read<CartBloc>().add(CartItemAdded(item)),
+                  onPressed:
+                  // isInCart
+                  //     ? () => context.read<CartBloc>().add(CartItemRemoved(item))
+                  //     :
+                  () => context.read<CartBloc>().add(CartItemAdded(item)),
                   child: isInCart
-                      ? const Icon(Icons.check, semanticLabel: 'ADDED')
+                      // ? const Icon(Icons.check, semanticLabel: 'Remove')
+                      ? Text('Add ${state.cart.itemswithquantity[item]}')
                       : const Text('ADD'),
                 );
               },
