@@ -49,13 +49,8 @@ class AddButton extends StatelessWidget {
     final theme = Theme.of(context);
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
-        return switch (state) {
-          CartLoading() => const CircularProgressIndicator(),
-          CartError() => const Text('Something went wrong!'),
-          CartLoaded() => Builder(
-              builder: (context) {
-                final isInCart = state.cart.items.contains(item);
-                return TextButton(
+        return
+                 TextButton(
                   style: TextButton.styleFrom(
                     disabledForegroundColor: theme.primaryColor,
                   ),
@@ -64,14 +59,69 @@ class AddButton extends StatelessWidget {
                   //     ? () => context.read<CartBloc>().add(CartItemRemoved(item))
                   //     :
                   () => context.read<CartBloc>().add(CartItemAdded(item)),
-                  child: isInCart
-                      // ? const Icon(Icons.check, semanticLabel: 'Remove')
-                      ? Text('Add ${state.cart.itemsWithQuantity[item]}')
-                      : const Text('ADD'),
+                  child:
+                    // isInCart
+                    //   ?
+                      const Icon(Icons.add, semanticLabel: 'Add')
+                      // ? Text('+ ${state.cart.itemsWithQuantity[item]}')
+                      // : const Text('ADD'),
                 );
               },
-            )
-        };
+            );
+      }
+  }
+
+
+class quantityDisplayed extends StatelessWidget {
+  const quantityDisplayed({required this.item, super.key});
+
+  final Item item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        return switch (state) {
+        CartLoading() => const CircularProgressIndicator(),
+        CartError() => const Text('Something went wrong!'),
+        CartLoaded() => Builder(
+        builder: (context) {
+        return
+          Text('${state.cart.itemsWithQuantity[item]??0}');
+        },
+        )
+      };
+      },
+    );
+  }
+}
+class RemoveButton extends StatelessWidget {
+  const RemoveButton({required this.item, super.key});
+
+  final Item item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        return  Builder(
+              builder: (context) {
+                return TextButton(
+                  style: TextButton.styleFrom(
+                    disabledForegroundColor: theme.primaryColor,
+                  ),
+                  onPressed:
+                  () => context.read<CartBloc>().add(CartItemRemoved(item)),
+                  child:
+                      // ? const Icon(Icons.check, semanticLabel: 'Remove')
+                      // ? Text('+ ${state.cart.itemsWithQuantity[item]}')
+                      const Icon(Icons.remove, semanticLabel: 'Remove'),
+                );
+              },
+            );
+
       },
     );
   }
@@ -114,6 +164,9 @@ class CatalogListItem extends StatelessWidget {
             Expanded(child: Text(item.name, style: textTheme)),
             const SizedBox(width: 24),
             AddButton(item: item),
+            quantityDisplayed(item: item),
+            RemoveButton(item: item),
+
           ],
         ),
       ),
