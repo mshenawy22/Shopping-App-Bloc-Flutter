@@ -23,7 +23,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       final items = await shoppingRepository.loadCartItems();
       final itemsWithQuantity = await shoppingRepository.loadCartItemsWithQuantity();
-      emit(CartLoaded(cart: Cart(items: [...items] , itemswithquantity: itemsWithQuantity )));
+      emit(CartLoaded(cart: Cart(items: [...items] , itemsWithQuantity: itemsWithQuantity )));
     } catch (_) {
       emit(CartError());
     }
@@ -41,7 +41,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         // state.cart.itemswithquantity.update(event.item, (value) => value+1 , ifAbsent: () => 1);
         emit(CartLoaded(cart: Cart(items: [...state.cart.items, event.item],
-        itemswithquantity: state.cart.itemswithquantity
+        itemsWithQuantity: state.cart.itemsWithQuantity
         )));
       } catch (_) {
         emit(CartError());

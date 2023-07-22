@@ -66,7 +66,7 @@ class AddButton extends StatelessWidget {
                   () => context.read<CartBloc>().add(CartItemAdded(item)),
                   child: isInCart
                       // ? const Icon(Icons.check, semanticLabel: 'Remove')
-                      ? Text('Add ${state.cart.itemswithquantity[item]}')
+                      ? Text('Add ${state.cart.itemsWithQuantity[item]}')
                       : const Text('ADD'),
                 );
               },
