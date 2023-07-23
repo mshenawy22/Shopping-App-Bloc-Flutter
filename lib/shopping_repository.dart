@@ -37,5 +37,5 @@ class ShoppingRepository {
 
   void removeItemFromCart(Item item) => _items.remove(item);
 
-  void removeItemFromCartwQuantity(Item item) =>  itemsWithQuantity.update(item, (oldvalue) => oldvalue-1 , ifAbsent: ()=>0) ;
+  void removeItemFromCartwQuantity(Item item) =>  itemsWithQuantity.update(item, (oldvalue) => oldvalue>0 ? oldvalue-1 : 0 , ifAbsent: ()=>0) ;
 }
