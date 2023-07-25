@@ -5,17 +5,34 @@ import 'package:flutter_shopping_cart/cart/cart.dart';
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+    final headlineRowStyle = Theme.of(context).
+    textTheme.titleLarge?.copyWith(color: Colors.white , fontWeight: FontWeight.bold);
     return Scaffold(
       appBar: AppBar(title: const Text('Cart')),
-      body: const ColoredBox(
+      body: ColoredBox(
         color: Colors.yellow,
         child: Column(
           children: [
+            Padding(
+              padding: EdgeInsets.only(right: 32, left: 32, top: 32 , bottom: 8),
+              child: Material(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: ListTile(
+                    tileColor : Colors.black.withOpacity(0.7),
+                    leading:  Text('Qty', style: headlineRowStyle),
+                    title: Text('Product', style: headlineRowStyle),
+                    trailing: Text('Price', style: headlineRowStyle),
+                  )),
+            ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(32),
+                padding: EdgeInsets.symmetric(horizontal: 32),
                 child: CartList(),
               ),
             ),
@@ -41,18 +58,19 @@ class CartList extends StatelessWidget {
           CartLoading() => const CircularProgressIndicator(),
           CartError() => const Text('Something went wrong!'),
           CartLoaded() => ListView.separated(
-              itemCount: state.cart.items.length,
+              itemCount: state.cart.itemsWithQuantity.length,
               separatorBuilder: (_, __) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
-                final item = state.cart.items[index];
+                final item = state.cart.itemsWithQuantity.keys.elementAt(index);
                 return Material(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: ListTile(
-                    leading: const Icon(Icons.done),
+                    leading: Text('${state.cart.itemsWithQuantity[item]!}' , style: itemNameStyle),
                     title: Text(item.name, style: itemNameStyle),
+                    trailing:  Text( '\$${state.cart.itemsWithQuantity[item]! * item.price}' , style: itemNameStyle),
                     onLongPress: () {
                       context.read<CartBloc>().add(CartItemRemoved(item));
                     },
