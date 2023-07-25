@@ -8,7 +8,16 @@ class Cart extends Equatable {
   final Map<Item, int> itemsWithQuantity;
 
   int get totalPrice {
-    return items.fold(0, (total, current) => total + current.price);
+    // return items.fold(0, (total, current) => total + current.price);
+    int totalPrice = 0;
+    // Iterate through all items and their quantities
+    itemsWithQuantity.forEach((item, quantity) {
+      // Calculate the price for the current item by multiplying its price with the quantity
+      int itemPrice = item.price * quantity;
+      totalPrice += itemPrice;
+    });
+
+    return totalPrice;
   }
 
   @override
