@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_shopping_cart/cart/cart.dart';
+import 'package:pay/pay.dart';
+import 'package:flutter_shopping_cart/pay/payment_configurations.dart' as payment_configurations;
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -85,13 +87,17 @@ class CartList extends StatelessWidget {
 }
 
 class CartTotal extends StatelessWidget {
-  const CartTotal({super.key});
+   CartTotal({super.key});
+  // final Future<PaymentConfiguration> _googlePayConfigFuture;
+  void onApplePayResult(paymentResult) {
+    debugPrint(paymentResult.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
     final hugeStyle =
         Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 48);
-
+    var cartState = context.read<CartBloc>().state;
     return SizedBox(
       height: 200,
       child: Center(
@@ -100,6 +106,7 @@ class CartTotal extends StatelessWidget {
           children: [
             BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
+
                 return switch (state) {
                   CartLoading() => const CircularProgressIndicator(),
                   CartError() => const Text('Something went wrong!'),
@@ -108,6 +115,7 @@ class CartTotal extends StatelessWidget {
                 };
               },
             ),
+
             const SizedBox(width: 24),
             ElevatedButton(
               onPressed: () {
@@ -118,6 +126,30 @@ class CartTotal extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
               child: const Text('BUY'),
             ),
+
+                 // ApplePayButton(
+                 //    onError: (error) => debugPrint('error111 ${error.toString()}'),
+                 //    paymentConfiguration: PaymentConfiguration.fromJsonString(
+                 //        payment_configurations.defaultApplePay),
+                 //    paymentItems: [
+                 //      PaymentItem(
+                 //          label: 'Total',
+                 //          amount: cartState is CartLoaded ? cartState.cart.totalPrice.toString():'0',
+                 //          // amount:'1',
+                 //          status: PaymentItemStatus.final_price,
+                 //          type: PaymentItemType.total
+                 //      ),
+                 //
+                 //    ],
+                 //    style: ApplePayButtonStyle.black,
+                 //    type: ApplePayButtonType.buy,
+                 //    margin: const EdgeInsets.only(top: 15.0),
+                 //    onPaymentResult: onApplePayResult,
+                 //    loadingIndicator: const Center(
+                 //      child: CircularProgressIndicator(),
+                 //    ),
+                 //  )
+
           ],
         ),
       ),
