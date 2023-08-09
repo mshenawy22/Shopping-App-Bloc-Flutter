@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_shopping_cart/cart/cart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pay/pay.dart';
 import 'package:flutter_shopping_cart/pay/payment_configurations.dart' as payment_configurations;
+
+import '../../navigator_key.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -88,9 +91,53 @@ class CartList extends StatelessWidget {
 
 class CartTotal extends StatelessWidget {
    CartTotal({super.key});
-  // final Future<PaymentConfiguration> _googlePayConfigFuture;
-  void onApplePayResult(paymentResult) {
-    debugPrint(paymentResult.toString());
+
+  void onApplePayResult(Map<String, dynamic> paymentResult) {
+
+    if (isTransactionSuccessful(paymentResult))
+      {
+        Future.delayed(Duration(seconds: 3), () {
+          Fluttertoast.showToast(
+              msg: "Payment successful - Order submitted",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 3,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+
+          Navigator.of(navigatorKey.currentContext!).pushNamed('/');
+
+        });
+
+      }
+    else {
+      Future.delayed(Duration(seconds: 3), () {
+          Fluttertoast.showToast(
+              msg: "Payment successful - Order submitted",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 3,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0
+             );
+          Navigator.of(navigatorKey.currentContext!).pushNamed('/');
+
+      });
+
+    }
+
+  }
+
+  bool isTransactionSuccessful (Map<String, dynamic> paymentResult)
+  {
+    if (paymentResult.containsKey('billingContact') ) {
+
+      return true;
+    }
+    else return false;
   }
 
   @override
@@ -117,38 +164,26 @@ class CartTotal extends StatelessWidget {
             ),
 
             const SizedBox(width: 24),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Buying not supported yet.')),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-              child: const Text('BUY'),
-            ),
 
-                 // ApplePayButton(
-                 //    onError: (error) => debugPrint('error111 ${error.toString()}'),
-                 //    paymentConfiguration: PaymentConfiguration.fromJsonString(
-                 //        payment_configurations.defaultApplePay),
-                 //    paymentItems: [
-                 //      PaymentItem(
-                 //          label: 'Total',
-                 //          amount: cartState is CartLoaded ? cartState.cart.totalPrice.toString():'0',
-                 //          // amount:'1',
-                 //          status: PaymentItemStatus.final_price,
-                 //          type: PaymentItemType.total
-                 //      ),
-                 //
-                 //    ],
-                 //    style: ApplePayButtonStyle.black,
-                 //    type: ApplePayButtonType.buy,
-                 //    margin: const EdgeInsets.only(top: 15.0),
-                 //    onPaymentResult: onApplePayResult,
-                 //    loadingIndicator: const Center(
-                 //      child: CircularProgressIndicator(),
-                 //    ),
-                 //  )
+                 ApplePayButton(
+                    onError: (error) => debugPrint('There is a payment error ${error.toString()}'),
+                    paymentConfiguration: PaymentConfiguration.fromJsonString(
+                        payment_configurations.defaultApplePay),
+                    paymentItems: [
+                      PaymentItem(
+                          label: 'Final',
+                          amount: cartState is CartLoaded ? cartState.cart.totalPrice.toString() : '0',
+                          type: PaymentItemType.item
+                      ),
+                    ],
+                    style: ApplePayButtonStyle.black,
+                    type: ApplePayButtonType.buy,
+                    margin: const EdgeInsets.only(top: 15.0),
+                    onPaymentResult: onApplePayResult,
+                    loadingIndicator: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
 
           ],
         ),
