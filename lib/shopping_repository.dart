@@ -29,7 +29,16 @@ class ShoppingRepository {
   Future<List<String>> loadCatalog() => Future.delayed(_delay, () => _catalog);
 
   Future<List<Item>> loadCartItems() => Future.delayed(_delay, () => _items);
+
   Future<Map<Item,int>> loadCartItemsWithQuantity() => Future.delayed(_delay, () => itemsWithQuantity);
+
+  Future<List<Item>> clearCartItems() {
+    _items.clear();
+    itemsWithQuantity.clear();
+   return Future.delayed(_delay, () => _items);
+
+  }
+
 
   void addItemToCart(Item item) => _items.add(item);
 

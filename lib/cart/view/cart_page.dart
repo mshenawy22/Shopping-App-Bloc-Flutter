@@ -106,7 +106,7 @@ class CartTotal extends StatelessWidget {
               textColor: Colors.white,
               fontSize: 16.0
           );
-
+          navigatorKey.currentContext!.read<CartBloc>().add(CartItemsCleared());
           Navigator.of(navigatorKey.currentContext!).pushNamed('/');
 
         });

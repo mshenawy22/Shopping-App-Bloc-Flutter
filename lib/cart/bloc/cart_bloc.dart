@@ -13,6 +13,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartStarted>(_onStarted);
     on<CartItemAdded>(_onItemAdded);
     on<CartItemRemoved>(_onItemRemoved);
+    on<CartItemsCleared>(_onClearCart);
   }
 
   final ShoppingRepository shoppingRepository;
@@ -22,6 +23,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     emit(CartLoading());
     try {
       final items = await shoppingRepository.loadCartItems();
+      final itemsWithQuantity = await shoppingRepository.loadCartItemsWithQuantity();
+      emit(CartLoaded(cart: Cart(items: [...items] , itemsWithQuantity: itemsWithQuantity )));
+    } catch (_) {
+      emit(CartError());
+    }
+  }
+
+  Future<void> _onClearCart(CartItemsCleared event, Emitter<CartState> emit) async {
+    emit(CartLoading());
+    try {
+      final items = await shoppingRepository.clearCartItems();
       final itemsWithQuantity = await shoppingRepository.loadCartItemsWithQuantity();
       emit(CartLoaded(cart: Cart(items: [...items] , itemsWithQuantity: itemsWithQuantity )));
     } catch (_) {
@@ -68,4 +80,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     }
   }
+
+
+
 }
