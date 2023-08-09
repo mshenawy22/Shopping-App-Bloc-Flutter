@@ -4,6 +4,8 @@ import 'package:flutter_shopping_cart/cart/cart.dart';
 import 'package:flutter_shopping_cart/catalog/catalog.dart';
 import 'package:flutter_shopping_cart/shopping_repository.dart';
 
+import 'navigator_key.dart';
+
 class App extends StatelessWidget {
   const App({required this.shoppingRepository, super.key});
 
@@ -27,6 +29,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Bloc Shopping Cart',
         initialRoute: '/',
+        navigatorKey: navigatorKey,
         routes: {
           '/': (_) => const CatalogPage(),
           '/cart': (_) => const CartPage(),
